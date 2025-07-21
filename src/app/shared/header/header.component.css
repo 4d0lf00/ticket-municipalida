@@ -1,0 +1,18 @@
+/* Header specific styles */
+.header-container {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.user-menu {
+  transition: all 0.2s ease-in-out;
+}
+
+.nav-link {
+  transition: all 0.2s ease-in-out;
+}
+
+.nav-link:hover {
+  transform: translateY(-1px);
+}

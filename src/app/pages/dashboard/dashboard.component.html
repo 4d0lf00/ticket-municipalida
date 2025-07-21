@@ -1,0 +1,168 @@
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <div class="space-y-6">
+    <!-- Stats Cards -->
+    <ng-container *ngIf="stats$ | async as stats">
+      <div class="dashboard-stats-grid">
+        <div class="dashboard-stats-card dashboard-stats-card-blue">
+          <div>
+            <p class="dashboard-stats-title">Total de Tickets</p>
+            <p class="dashboard-stats-value">{{ stats.total }}</p>
+            <p class="dashboard-stats-desc">Todos los estados</p>
+          </div>
+        </div>
+        <div class="dashboard-stats-card dashboard-stats-card-orange">
+          <div>
+            <p class="dashboard-stats-title">Tickets Abiertos</p>
+            <p class="dashboard-stats-value">{{ stats.open }}</p>
+            <p class="dashboard-stats-desc">Requieren atención</p>
+          </div>
+        </div>
+        <div class="dashboard-stats-card dashboard-stats-card-yellow">
+          <div>
+            <p class="dashboard-stats-title">En Progreso</p>
+            <p class="dashboard-stats-value">{{ stats.inProgress }}</p>
+            <p class="dashboard-stats-desc">Siendo trabajados</p>
+          </div>
+        </div>
+        <div class="dashboard-stats-card dashboard-stats-card-green">
+          <div>
+            <p class="dashboard-stats-title">Tickets Resueltos</p>
+            <p class="dashboard-stats-value">{{ stats.resolved }}</p>
+            <p class="dashboard-stats-desc">Ya solucionados</p>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- Tablas -->
+  <div class="mt-10">
+    <h2 class="dashboard-section-title">Tickets por mes</h2>
+    <table class="dashboard-table">
+      <thead>
+        <tr>
+          <th>Mes/Año</th>
+          <th>Total</th>
+          <th>Resueltos</th>
+          <th>Abiertos</th>
+          <th>En Progreso</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="ticketsByMonth$ | async as ticketsByMonth">
+        <tr *ngFor="let item of ticketsByMonth">
+          <td>{{ item.month }}</td>
+          <td>{{ item.total }}</td>
+          <td>{{ item.resolved }}</td>
+          <td>{{ item.open }}</td>
+          <td>{{ item.inProgress }}</td>
+        </tr>
+        <tr *ngIf="ticketsByMonth.length === 0">
+          <td colspan="5" class="dashboard-table-empty">No hay tickets</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-10">
+    <h2 class="dashboard-section-title">Tickets asignados y resueltos por usuario</h2>
+    <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 1rem;">
+      <label for="monthFilterUser" class="text-sm font-medium text-gray-600 mr-2">Filtrar por:</label>
+      <select id="monthFilterUser" [(ngModel)]="selectedMonthYearUser" (change)="onMonthYearUserChange()" class="rounded border border-gray-300 px-2 py-1">
+        <option value="">Todos</option>
+        <option *ngFor="let my of availableMonthYearsUser" [value]="my">{{ my }}</option>
+      </select>
+    </div>
+    <table class="dashboard-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Rol</th>
+          <th>Asignados</th>
+          <th>Resueltos</th>
+          <th>% Resolución</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="ticketsByUser$ | async as ticketsByUser">
+        <tr *ngFor="let user of ticketsByUser">
+          <td>{{ user.name }}</td>
+          <td>{{ user.role }}</td>
+          <td>{{ user.assigned }}</td>
+          <td>{{ user.resolved }}</td>
+          <td>{{ user.resolutionRate }}%</td>
+        </tr>
+        <tr *ngIf="ticketsByUser.length === 0">
+          <td colspan="5" class="dashboard-table-empty">No hay tickets asignados</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Filtro de mes/año y gráficos en grid responsivo -->
+  <div class="dashboard-charts-grid gap-8 mt-10">
+    <!-- Filtro de mes/año para el gráfico de tickets por mes -->
+    <div class="dashboard-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2 class="dashboard-card-title">Gráfico: Tickets por mes</h2>
+        <div>
+          <label for="monthFilter" class="text-sm font-medium text-gray-600 mr-2">Filtrar por:</label>
+          <select id="monthFilter" [(ngModel)]="selectedMonthYear" (change)="onMonthYearChange()" class="rounded border border-gray-300 px-2 py-1">
+            <option value="">Todos</option>
+            <option *ngFor="let my of availableMonthYears" [value]="my">{{ my }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="w-full overflow-x-auto" style="min-height:180px; min-height: 320px;">
+        <canvas baseChart
+          [data]="ticketsByMonthChartData"
+          [options]="chartOptions"
+          [type]="'bar'"
+          [plugins]="[ChartDataLabels]">
+        </canvas>
+      </div>
+    </div>
+
+    <!-- Gráfico: Tickets por usuario -->
+    <div class="dashboard-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2 class="dashboard-card-title">Gráfico: Tickets por usuario</h2>
+        <div>
+          <label for="monthFilterUserChart" class="text-sm font-medium text-gray-600 mr-2">Filtrar por:</label>
+          <select id="monthFilterUserChart" [(ngModel)]="selectedMonthYearUser" (change)="onMonthYearUserChange()" class="rounded border border-gray-300 px-2 py-1">
+            <option value="">Todos</option>
+            <option *ngFor="let my of availableMonthYearsUser" [value]="my">{{ my }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="w-full overflow-x-auto" style="min-height:180px; min-height: 320px;">
+        <canvas baseChart
+          [data]="ticketsByUserChartData"
+          [options]="chartOptions"
+          [type]="'bar'"
+          [plugins]="[ChartDataLabels]">
+        </canvas>
+      </div>
+    </div>
+
+    <!-- Gráfico: Tiempo promedio de resolución por usuario (ocupa todo el ancho) -->
+    <div class="dashboard-card dashboard-card-full">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2 class="dashboard-card-title">Gráfico: Tiempo promedio de resolución por usuario</h2>
+        <div>
+          <label for="monthFilterAvgTime" class="text-sm font-medium text-gray-600 mr-2">Filtrar por:</label>
+          <select id="monthFilterAvgTime" [(ngModel)]="selectedMonthYearAvgTime" (change)="onMonthYearAvgTimeChange()" class="rounded border border-gray-300 px-2 py-1">
+            <option value="">Todos</option>
+            <option *ngFor="let my of availableMonthYearsAvgTime" [value]="my">{{ my }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="w-full overflow-x-auto" style="min-height:180px; min-height: 320px;">
+        <canvas baseChart
+          [data]="avgResolutionTimeChartData"
+          [options]="chartOptions"
+          [type]="'bar'"
+          [plugins]="[ChartDataLabels]">
+        </canvas>
+      </div>
+    </div>
+  </div>
+</main>
