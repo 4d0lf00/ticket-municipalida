@@ -39,3 +39,50 @@
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(37, 99, 235, 0.2);
 }
+
+/* Editor Container */
+.editor-container {
+  position: relative;
+  background: white;
+}
+
+.editor-container.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: white;
+}
+
+.rich-editor {
+  min-height: 120px;
+  padding: 16px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+@media (max-width: 1024px) {
+  .editor-container {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .editor-container {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .editor-container {
+    width: 100%;
+  }
+  .rich-editor {
+    padding: 10px;
+    font-size: 13px;
+  }
+}

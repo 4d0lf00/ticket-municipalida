@@ -216,6 +216,7 @@ div#avatar-requester {
 @media (max-width: 640px) {
   .text-sm {
     font-size: 0.875rem;
+    width: 100%;
   }
   .text-xs {
     font-size: 0.75rem;
