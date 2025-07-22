@@ -41,6 +41,12 @@
           <div *ngIf="showUserMenu"
             class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-gray-200">
 
+            <!-- Mostrar datos de usuario solo en móviles -->
+            <div class="px-4 py-3 border-b block sm:hidden">
+              <p class="text-sm font-medium text-gray-900">{{ usuario.name }}</p>
+              <p class="text-xs text-gray-500">{{ usuario.department }}</p>
+            </div>
+
             <!-- Mostrar "Registrar usuario" solo si el usuario es admin -->
             <button
               *ngIf="usuario.role === 'admin'"
