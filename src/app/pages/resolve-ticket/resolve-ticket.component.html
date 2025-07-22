@@ -227,7 +227,7 @@
                     <div class="status-section">
                       <label class="status-label">Estado del Ticket:</label>
                       <select [(ngModel)]="ticket.status" class="status-select">
-                        <option value="open">Abrir (actual)</option>
+                        <option value="open">Abrir</option>
                         <option value="in-progress">En Progreso</option>
                         <option value="resolved">Resuelto</option>
                       </select>
@@ -238,7 +238,7 @@
                   <div *ngIf="currentUser?.role === 'admin' || currentUser?.role === 'support'" class="assignee-section">
                     <label class="assignee-label">Asignar a:</label>
                     <select [(ngModel)]="ticket.assignee" class="assignee-select">
-                      <option value="" disabled>Seleccionar administrador</option>
+                      <option value="" disabled>Seleccionar soporte</option>
                       <option *ngFor="let user of assignableUsers" [value]="user.email">
                         {{ user.name }} ({{ user.role === 'admin' ? 'Administrador' : 'Soporte' }})
                       </option>

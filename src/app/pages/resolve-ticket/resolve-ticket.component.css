@@ -718,8 +718,8 @@
 /* Buttons */
 .reset-button {
   padding: 8px 16px;
-  background: white;
-  color: #6b7280;
+  background: #3686ff;
+  color: #ffffff;
   border: 1px solid #d1d5db;
   border-radius: 6px;
   font-size: 13px;
@@ -732,8 +732,8 @@
 }
 
 .reset-button:hover {
-  background-color: #f9fafb;
-  color: #374151;
+  background-color: #2b67c2;
+  color: #ffffff;
   border-color: #9ca3af;
 }
 
@@ -1010,25 +1010,27 @@ button.update-button {
   }
 }
 
-@media (max-width: 535px) {
+@media (max-width: 414px) {
   .ticket-meta {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 10px;
-    justify-content: space-between;
     align-items: flex-start;
   }
   .meta-item {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    max-width: 19%;
+    width: 100%;
+    max-width: 100%;
     text-align: left;
     word-break: break-word;
     line-height: 1.4;
+    justify-content: flex-start;
+    gap: 8px;
   }
   .meta-item svg {
-    margin-bottom: 5px;
+    margin-bottom: 0;
   }
   .meta-text {
     font-size: 0.9rem;
@@ -1077,6 +1079,9 @@ button.update-button {
     font-size: 11px;
     padding: 4px 0;
   }
+  button.update-button {
+    width: 100%;
+}
 }
 
 @media (max-width: 640px) {
@@ -1106,6 +1111,7 @@ button.update-button {
   @media (max-width: 556px) {
     .reset-button,.update-button,.send-button{
       height: 59px !important;
+      width: 100%;
     }
   }
 

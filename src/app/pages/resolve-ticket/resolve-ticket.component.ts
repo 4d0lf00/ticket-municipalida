@@ -82,7 +82,7 @@ onClickOutside(target: HTMLElement) {
     height: 300,
     menubar: false,
     plugins: 'lists link table image code',
-    toolbar: 'undo redo | bold italic underline strikethrough | bullist numlist | table | link | image | code',
+    toolbar: 'undo redo bold italic underline strikethrough bullist numlist table link image code',
     branding: false,
     statusbar: false,
     file_picker_types: 'image file',
@@ -113,7 +113,19 @@ onClickOutside(target: HTMLElement) {
       };
 
       input.click();
-    }
+    },
+    content_style: `
+      .tox .tox-toolbar__primary {
+        flex-wrap: wrap !important;
+        overflow-x: visible !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+      }
+      .tox .tox-toolbar-overlord {
+        overflow-x: visible !important;
+      }
+    `
   };
 
   private route = inject(ActivatedRoute);

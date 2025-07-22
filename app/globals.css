@@ -92,3 +92,51 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* TinyMCE toolbar multiline/wrap fix */
+.tox .tox-toolbar__primary {
+  flex-wrap: wrap !important;
+  overflow-x: visible !important;
+  width: 100% !important;
+}
+
+.tox .tox-toolbar-overlord {
+  overflow-x: visible !important;
+}
+
+/* Forzar wrap en el toolbar de TinyMCE y evitar scroll horizontal */
+:root .tox .tox-editor-header,
+:root .tox .tox-toolbar__primary,
+:root .tox .tox-toolbar-overlord {
+  flex-wrap: wrap !important;
+  overflow-x: visible !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  display: flex !important;
+  box-sizing: border-box !important;
+}
+
+/* Solución definitiva TinyMCE: forzar wrap y evitar scroll en toolbar */
+.tox .tox-toolbar--scrolling {
+  flex-wrap: wrap !important;
+  overflow-x: visible !important;
+}
+
+/* Solución avanzada TinyMCE: máxima especificidad para forzar wrap y evitar scroll en toolbar */
+:root .tox .tox-toolbar--scrolling,
+body .tox .tox-toolbar--scrolling,
+.tox .tox-toolbar--scrolling {
+  flex-wrap: wrap !important;
+  overflow-x: visible !important;
+  max-width: 100% !important;
+}
+
+/* Forzar wrap en los botones del grupo del toolbar de TinyMCE */
+.tox .tox-toolbar__group {
+  flex-wrap: wrap !important;
+  display: flex !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
