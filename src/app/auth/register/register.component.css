@@ -162,7 +162,13 @@ html, body {
     min-height: fit-content;
   }
   :host ::ng-deep .min-h-screen.bg-gray-50 {
-    background-color: rgb(0 77 204) !important;
+    background-color: rgb(0, 77, 204) !important;
+  }
+  .min-h-screen.bg-gray-50 {
+    background-color: rgb(0, 77, 204) !important;
+  }
+  body .min-h-screen.bg-gray-50 {
+    background-color: rgb(0, 77, 204) !important;
   }
   
   .form-container {
@@ -177,7 +183,7 @@ html, body {
   }
   .bg-gray.min-h-screen.bg-gray-50-50 {
     --tw-bg-opacity: 1;
-    background-color: rgb(1 78 205)!important;
+    background-color: rgb(1, 78, 205)!important;
 }
   .form-card {
     background: #2563eb;

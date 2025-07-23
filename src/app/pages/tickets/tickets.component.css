@@ -216,7 +216,11 @@ div#avatar-requester {
 @media (max-width: 640px) {
   .text-sm {
     font-size: 0.875rem;
-    width: 100%;
+    /* otras reglas generales */
+  }
+  
+  button.text-sm {
+    width: 100%; /* solo los botones */
   }
   .text-xs {
     font-size: 0.75rem;
@@ -227,6 +231,10 @@ div#avatar-requester {
     min-width: 100%;
     width: 100%;
   }
+  span.font-medium.text-gray-900 {
+    width: 75%;
+
+}
 }
 
 /* Enhanced mobile card styling */

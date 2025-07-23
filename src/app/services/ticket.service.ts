@@ -32,7 +32,7 @@ export class TicketService {
 
   getTicketsByUser(email: string): Observable<Ticket[]> {
   return this.ticketsSubject.asObservable().pipe(
-    map((tickets) => tickets.filter(t => t.requesterEmail === email)) // ✅ nuevo campo
+    map((tickets) => tickets.filter(t => t.requesterEmail === email)) 
   );
 }
 

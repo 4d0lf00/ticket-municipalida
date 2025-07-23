@@ -16,3 +16,32 @@
 .nav-link:hover {
   transform: translateY(-1px);
 }
+
+@media (max-width: 320px) {
+  .titulo-navbar h1 {
+    font-size: 1rem;
+    word-break: break-word;
+    transition: font-size 0.2s;
+  }
+  .titulo-navbar p {
+    font-size: 0.7rem;
+    word-break: break-word;
+    transition: font-size 0.2s;
+  }
+  .titulo-navbar {
+    max-width: 95vw;
+    transition: max-width 0.2s;
+  }
+}
+
+@media (max-width: 272px) {
+  .titulo-navbar h1 {
+    font-size: 0.85rem;
+  }
+  .titulo-navbar p {
+    font-size: 0.6rem;
+  }
+  .titulo-navbar {
+    max-width: 99vw;
+  }
+}

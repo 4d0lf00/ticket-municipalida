@@ -331,9 +331,9 @@ getRequesterInitials(requesterName: string): string {
   }
   }
 
-  // Función para obtener el rol del requester basado en el nombre
-  getUserRole(requesterName: string): string {
-    const user = this.allUsers.find((u: User) => u.name === requesterName);
+  // Función para obtener el rol del requester o assignee basado en nombre o email
+  getUserRole(assignee: string): string {
+    const user = this.allUsers.find((u: User) => u.name === assignee || u.email === assignee);
     return user ? user.role : 'unknown'; // Si no se encuentra, se retorna 'unknown'
   }
 }

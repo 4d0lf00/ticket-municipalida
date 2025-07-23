@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -12,7 +12,7 @@ import { User } from '../../models/user.model';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit, OnDestroy {
   user: User = {
     name: '',
     email: '',
@@ -48,6 +48,33 @@ export class RegisterComponent {
   ];
 
   constructor(private userSessionService: UserSessionService, private router: Router) {}
+
+  private resizeListener = () => {
+    this.applyResponsiveBg();
+  };
+
+  ngOnInit(): void {
+    this.applyResponsiveBg();
+    window.addEventListener('resize', this.resizeListener);
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('resize', this.resizeListener);
+  }
+
+  private applyResponsiveBg() {
+    let el = document.querySelector('.min-h-screen.bg-gray-50');
+    if (!el) {
+      el = document.querySelector('.min-h-screen') || document.querySelector('.bg-gray-50');
+    }
+    if (el) {
+      if (window.innerWidth < 600) {
+        (el as HTMLElement).setAttribute('style', 'background-color: rgb(0, 77, 204) !important; min-height: 100vh !important;');
+      } else {
+        (el as HTMLElement).setAttribute('style', '');
+      }
+    }
+  }
 
 async registrar() {
   // Validación básica de campos
