@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs';
 export class HeaderComponent implements OnInit, OnDestroy {
   usuario: User | null = null;
   showUserMenu = false;
+  mostrarNavbar = true;
   private sub!: Subscription;
   @ViewChild('menuWrapper') menuWrapperRef!: ElementRef;
 

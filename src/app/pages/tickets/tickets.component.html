@@ -5,16 +5,17 @@
       <div class="flex flex-col space-y-4">
         <!-- Filter Buttons -->
         <div class="flex flex-wrap gap-2">
-          <button 
+          <button id="all-tickets"
             class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md border transition-colors"
             [ngClass]="statusFilter === 'all' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'"
             (click)="statusFilter = 'all'">
+            <div class="w-2 h-2 bg-gray-200 border border-gray-400 rounded-full"></div>
             Todos
             <span class="px-1.5 py-0.5 text-xs bg-gray-100 text-gray-800 rounded">
               {{ getTotalCount() | async }}
             </span>
           </button>
-          <button 
+          <button id="open-tickets"
             class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md border transition-colors"
             [ngClass]="statusFilter === 'open' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'"
             (click)="statusFilter = 'open'">
@@ -24,7 +25,7 @@
               {{ getStatusCount('open') | async }}
             </span>
           </button>
-          <button 
+          <button id="in-progress-tickets"
             class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md border transition-colors"
             [ngClass]="statusFilter === 'in-progress' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'"
             (click)="statusFilter = 'in-progress'">
@@ -34,7 +35,7 @@
               {{ getStatusCount('in-progress') | async }}
             </span>
           </button>
-          <button 
+          <button id="resolved-tickets"
             class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md border transition-colors"
             [ngClass]="statusFilter === 'resolved' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'"
             (click)="statusFilter = 'resolved'">

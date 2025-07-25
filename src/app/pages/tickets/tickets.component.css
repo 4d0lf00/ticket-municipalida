@@ -219,8 +219,10 @@ div#avatar-requester {
     /* otras reglas generales */
   }
   
-  button.text-sm {
+  button#all-tickets, button#open-tickets, button#in-progress-tickets, button#resolved-tickets {
     width: 100%; /* solo los botones */
+    display: flex;
+    justify-content: space-between;
   }
   .text-xs {
     font-size: 0.75rem;
