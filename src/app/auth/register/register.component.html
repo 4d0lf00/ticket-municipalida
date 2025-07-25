@@ -1,0 +1,103 @@
+<div class="form-container">
+  <div class="form-card">
+    <h2 class="form-title">Registro de Usuario</h2>
+    <p class="form-subtitle">Complete los siguientes campos para registrarse</p>
+    
+    <form (ngSubmit)="registrar()" class="registration-form">
+      <!-- Nombre -->
+      <div class="form-group">
+        <label for="name" class="form-label">
+          <span class="label-text">Nombre</span>
+          <span class="required">*</span>
+        </label>
+        <input 
+          id="name" 
+          type="text" 
+          [(ngModel)]="user.name" 
+          name="name" 
+          required
+          class="form-input"
+          placeholder="Ingrese su nombre completo"
+        >
+      </div>
+
+      <!-- Correo Electrónico -->
+      <div class="form-group">
+        <label for="email" class="form-label">
+          <span class="label-text">Correo Electrónico</span>
+          <span class="required">*</span>
+        </label>
+        <input 
+          id="email" 
+          type="email" 
+          [(ngModel)]="user.email" 
+          name="email" 
+          required
+          class="form-input"
+          placeholder="ejemplo@correo.com"
+        >
+      </div>
+
+      <!-- Departamento -->
+      <div class="form-group">
+        <label for="department" class="form-label">
+          <span class="label-text">Departamento</span>
+          <span class="required">*</span>
+        </label>
+        <select 
+          id="department"
+          [(ngModel)]="user.department" 
+          name="department" 
+          required
+          class="form-select"
+        >
+          <option value="" disabled selected>Selecciona un departamento</option>
+          <option *ngFor="let dept of departamentos" [value]="dept">{{ dept }}</option>
+        </select>
+      </div>
+
+      <!-- Role -->
+      <div class="form-group">
+        <label for="role" class="form-label">
+          <span class="label-text">Rol</span>
+          <span class="required">*</span>
+        </label>
+        <select 
+          id="role"
+          [(ngModel)]="user.role" 
+          name="role" 
+          required
+          class="form-select"
+        >
+          <option value="user">Usuario</option>
+          <option value="support">Soporte</option>
+          <option value="admin">Administrador</option>
+        </select>
+      </div>
+<!-- Contraseña -->
+<div class="form-group">
+  <label for="password" class="form-label">
+    <span class="label-text">Contraseña</span>
+    <span class="required">*</span>
+  </label>
+  <input
+    id="password"
+    type="password"
+    [(ngModel)]="user.password"
+    name="password"
+    required
+    class="form-input"
+    placeholder="Ingrese su contraseña"
+  >
+</div>
+
+      <button type="submit" class="submit-button">
+        Registrar Usuario
+      </button>
+
+      <div *ngIf="mensaje" class="message" [ngClass]="{'success': isSuccess, 'error': !isSuccess}">
+        {{ mensaje }}
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,113 @@
+<main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <div class="bg-white rounded-lg border border-gray-200 p-6">
+    <div class="mb-6">
+      <h2 class="text-2xl font-bold text-gray-900">Crear Nuevo Ticket</h2>
+      <p class="text-gray-600 mt-1">
+        Describe tu problema o solicitud para que el equipo de IT pueda ayudarte
+      </p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #ticketForm="ngForm" class="space-y-6">
+      <!-- User Info -->
+        <div *ngIf="usuario as user" class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+        <h3 class="text-sm font-medium text-gray-900 mb-3">Información del Solicitante</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+          <div>
+            <span class="text-gray-600">Nombre:</span>
+            <p class="font-medium">{{ user.name }}</p>
+          </div>
+          <div>
+            <span class="text-gray-600">Email:</span>
+            <p class="font-medium">{{ user.email }}</p>
+          </div>
+          <div>
+            <span class="text-gray-600">Departamento:</span>
+            <p class="font-medium">{{ user.department }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Title -->
+      <div class="space-y-2">
+        <label for="title" class="block text-sm font-medium text-gray-700">Asunto *</label>
+        <input
+          type="text"
+          id="title"
+          [(ngModel)]="formData.title"
+          name="title"
+          placeholder="Describe brevemente el problema"
+          required
+          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+      </div>
+
+      <!-- Category -->
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">Categoría *</label>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div 
+            *ngFor="let category of categories"
+            class="cursor-pointer transition-all border rounded-lg p-4"
+            [ngClass]="formData.category === category.value 
+              ? 'ring-2 ring-blue-500 bg-blue-50 border-blue-200' 
+              : 'hover:bg-gray-50 border-gray-200'"
+            (click)="selectCategory(category.value)">
+            <div class="flex items-start gap-3">
+              <svg class="h-5 w-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="category.iconPath"></path>
+              </svg>
+              <div>
+                <h3 class="font-medium text-sm">{{ category.label }}</h3>
+                <p class="text-xs text-gray-600 mt-1">{{ category.description }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Priority -->
+      <div class="space-y-2">
+        <label for="priority" class="block text-sm font-medium text-gray-700">Prioridad</label>
+        <select
+          id="priority"
+          [(ngModel)]="formData.priority"
+          name="priority"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          <option value="low">Baja - No es urgente</option>
+          <option value="medium">Media - Puede esperar unas horas</option>
+          <option value="high">Alta - Necesita atención pronto</option>
+          <option value="urgent">Urgente - Bloquea el trabajo</option>
+        </select>
+      </div>
+
+      <!-- Description con TinyMCE -->
+      <div class="space-y-2">
+        <label for="description" class="block text-sm font-medium text-gray-700">Descripción Detallada *</label>
+          <editor
+            [apiKey]="editorApiKey"
+            [init]="editorInit"
+            [(ngModel)]="formData.description"
+            name="description">
+          </editor>
+      </div>
+
+
+      <!-- Info Alert -->
+      <div class="flex items-center gap-2 p-4 bg-blue-50 rounded-lg border border-blue-200">
+        <svg class="h-5 w-5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <p class="text-sm text-blue-800">
+          El equipo de IT revisará tu solicitud y te contactará pronto. Recibirás actualizaciones por email.
+        </p>
+      </div>
+
+      <!-- Submit Button -->
+      <button 
+        type="submit"
+        [disabled]="!formData.title || !formData.description || !formData.category"
+        class="w-full py-3 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+        Crear Ticket
+      </button>
+    </form>
+  </div>
+</main>

@@ -1,0 +1,290 @@
+<div class="ticket-page">
+  <div class="ticket-content">
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="ticket-header">
+        <div class="header-left">
+          <div class="ticket-title">
+            <div class="ticket-id">Ticket #{{ ticket.id }} </div>
+          </div>
+        </div>
+        <span 
+          class="text-xs font-semibold px-2 py-1 rounded"
+          [ngClass]="getStatusClass(ticket.status)">
+          {{ getStatusText(ticket.status) }}
+        </span>
+      </div>
+
+      <!-- Ticket Details Card -->
+      <div class="ticket-card">
+        <div class="card-header">
+         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+  <h3 class="text-lg font-semibold text-gray-900">{{ ticket.title }}</h3>
+  <span id="fecha_actualizacion" class="text-sm text-gray-500">
+    Actualizado {{ formatDate(ticket.updatedAt) }}
+  </span>
+      </div>
+  <div class="ticket-meta">
+  <div class="meta-item">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </svg>
+    <span class="meta-text">{{ ticket.requesterName }}</span>
+  </div>
+  <div class="meta-item">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+      <circle cx="12" cy="10" r="3"/>
+    </svg>
+    <span class="meta-text">{{ ticket.department }}</span>
+  </div>
+  <div class="meta-item">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M9 11H5a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h4l3 3V8l-3 3z"/>
+      <path d="M22 9c0 1.11-.89 2-2 2s-2-.89-2-2 .89-2 2-2 2 .89 2 2z"/>
+    </svg>
+    <span class="meta-text">{{ getCategoryText(ticket.category) }}</span>
+  </div>
+</div>
+
+        </div>
+      </div>
+
+      <!-- Thread Section -->
+      <div class="thread-card">
+        <div class="thread-header">
+          <div class="thread-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            Hilo del Ticket ({{ responses.length + 1 }})
+          </div>
+          <div class="thread-actions">
+            <button class="thread-action-btn">Tareas</button>
+            <button class="thread-action-btn">Hilo</button>
+          </div>
+        </div>
+
+        <div class="thread-content">
+          <!-- Original Message -->
+          <div class="message original-message">
+            <div class="message-avatar">
+              <div 
+                class="avatar-circle" 
+                [ngClass]="{
+                  'admin-avatar': getUserRole(ticket.requesterEmail) === 'admin',
+                  'support-avatar': getUserRole(ticket.requesterEmail) === 'support',
+                  'user-avatar': getUserRole(ticket.requesterEmail) === 'user',
+                  'unknown-avatar': getUserRole(ticket.requesterEmail) === 'unknown'
+                }"
+              >
+                {{ getInitials(ticket.requesterName) }}
+              </div>
+            </div>
+            <div class="message-content">
+              <div class="message-header">
+                <div class="flex flex-col">
+                  <span class="message-author font-semibold text-base">{{ ticket.requesterName }}</span>
+                  <span class="text-sm text-gray-500">{{ ticket.requesterEmail }}</span>
+                </div>
+                <span class="message-time">publicado {{ formatDate(ticket.createdAt) }}</span>
+                <button class="message-reply-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 20l1.3-3.9A9 9 0 1 1 7.7 19L3 20z"/>
+                  </svg>
+                </button>
+              </div>
+                <div class="message-body">
+                  <div class="response-content" [innerHTML]="ticket.description"></div>
+                </div>
+              <div class="message-footer">
+                <span class="message-meta">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2v20m8-8H4"/>
+                  </svg>
+                  Creado por: {{ ticket.requesterName }} {{ formatDate(ticket.createdAt) }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+<!-- Responses -->
+<div #menuContainer class="message response-message" *ngFor="let response of responses; let i = index">
+  <div class="message-avatar">
+    <div 
+      class="avatar-circle" 
+      [ngClass]="{
+        'admin-avatar': getUserRole(response.authorEmail) === 'admin',
+        'support-avatar': getUserRole(ticket.requesterEmail) === 'support',
+        'user-avatar': getUserRole(response.authorEmail) === 'user',
+        'unknown-avatar': getUserRole(response.authorEmail) === 'unknown'
+      }"
+    >
+      {{ getInitials(response.author) }}
+    </div>
+  </div>
+  <div class="message-content">
+    <div class="message-header">
+      <div class="author-info">
+        <span class="message-author">{{ response.author }}</span>
+        <span class="message-email">{{ response.authorEmail }}</span>
+      </div>
+      <span class="message-time">publicado {{ formatDate(response.timestamp) }}</span>
+
+      <!-- Botón con menú contextual -->
+ <!-- Botón para abrir menú -->
+  <button class="message-reply-btn" (click)="toggleMenu(i)">...</button>
+
+  <!-- Menú contextual -->
+  <div
+    *ngIf="openMenuIndex === i" 
+    #menuContainer
+    class="absolute right-0 mt-2 w-32 bg-white border rounded shadow z-20"
+  >
+    <button
+      class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+      (click)="editResponse(i)"
+    >
+      ✏️ Editar
+    </button>
+    <button
+      class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100"
+      (click)="deleteResponse(i)"
+    >
+      🗑️ Eliminar
+    </button>
+  </div>
+    </div>
+
+    <div class="message-body">
+      <div class="response-content" [innerHTML]="response.message"></div>
+    </div>
+  </div>
+</div>
+
+
+          <!-- Enhanced Response Form -->
+          <div class="response-form">
+            <div class="form-header">
+              <div class="form-tabs">
+                <button class="form-tab active">Publicar Respuesta</button>
+              </div>
+            </div>
+
+            <div class="form-content">
+              <!-- Quick Response Dropdown -->
+              <div class="quick-response-section">
+                <label class="quick-response-label">Respuesta:</label>
+                <select 
+                  class="quick-response-select"
+                  [(ngModel)]="selectedQuickResponse"
+                  (change)="insertQuickResponse()"
+                >
+                  <option value="">Seleccione una respuesta predefinida</option>
+                  <option *ngFor="let response of quickResponses" [value]="response.text">
+                    {{ response.title }}
+                  </option>
+                </select>
+              </div>
+
+              <editor
+                [(ngModel)]="newResponse"
+                [apiKey]="editorApiKey"
+                [init]="editorInit"
+              ></editor>
+
+              <!-- Form Footer -->
+              <div class="enhanced-form-footer">
+                <div class="footer-left">
+                  <!-- Signature Options -->
+                  <div class="signature-section">
+                    <span class="signature-label">Firma:</span>
+                    <div class="signature-options">
+                      <label class="signature-option">
+                        <input 
+                          type="radio" 
+                          name="signature" 
+                          value="none"
+                          [(ngModel)]="selectedSignature"
+                        />
+                        <span>Ninguno</span>
+                      </label>
+                      <label class="signature-option">
+                        <input 
+                          type="radio" 
+                          name="signature" 
+                          value="department"
+                          [(ngModel)]="selectedSignature"/>
+                          <span>Firma del Departamento ({{ currentUser?.department || 'Departamento' }})</span>
+                      </label>
+                    </div>
+                  </div>
+                  
+                  <!-- Solo visible para administradores y soporte -->
+                    <div *ngIf="currentUser?.role === 'admin' || currentUser?.role === 'support'" class="footer-left">
+                    <!-- Ticket Status -->
+                    <div class="status-section">
+                      <label class="status-label">Estado del Ticket:</label>
+                      <select [(ngModel)]="ticket.status" class="status-select">
+                        <option value="open">Abrir</option>
+                        <option value="in-progress">En Progreso</option>
+                        <option value="resolved">Resuelto</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Asignar Ticket a un Administrador o soporte -->
+                  <div *ngIf="currentUser?.role === 'admin' || currentUser?.role === 'support'" class="assignee-section">
+                    <label class="assignee-label">Asignar a:</label>
+                    <select [(ngModel)]="ticket.assignee" class="assignee-select">
+                      <option value="" disabled>Seleccionar soporte</option>
+                      <option *ngFor="let user of assignableUsers" [value]="user.email">
+                        {{ user.name }} ({{ user.role === 'admin' ? 'Administrador' : 'Soporte' }})
+                      </option>
+                    </select>
+                  </div>
+                <div class="footer-right">
+                  <button 
+                    type="button"
+                    class="reset-button"
+                    (click)="resetForm()">
+                    Restablecer
+                  </button>
+                  <button 
+                  class="update-button"
+                  (click)="updateTicketOnly()">
+                  💾 Actualizar Ticket
+                  </button>
+                  <button 
+                    class="send-button"
+                    (click)="addResponse()"
+                    [disabled]="!newResponse.trim()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                    </svg>
+                    Publicar Respuesta
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+  </div>
+</div>
+
+<!-- Modal para ver imágenes -->
+<div 
+  class="image-modal-backdrop" 
+  *ngIf="isImageModalOpen" 
+  (click)="closeImageModal()"
+>
+  <div class="image-modal-content" (click)="$event.stopPropagation()">
+    <img [src]="selectedImageUrl" alt="Imagen ampliada" class="modal-image"/>
+    <button class="close-button" (click)="closeImageModal()">×</button>
+  </div>
+</div>

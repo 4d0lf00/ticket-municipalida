@@ -1,0 +1,88 @@
+/* Create ticket page specific styles */
+.form-container {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.category-card {
+  transition: all 0.2s ease-in-out;
+}
+
+.category-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-input {
+  transition: all 0.2s ease-in-out;
+}
+
+.form-input:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.submit-button {
+  transition: all 0.2s ease-in-out;
+}
+
+.submit-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.2);
+}
+
+/* Editor Container */
+.editor-container {
+  position: relative;
+  background: white;
+}
+
+.editor-container.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: white;
+}
+
+.rich-editor {
+  min-height: 120px;
+  padding: 16px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+@media (max-width: 1024px) {
+  .editor-container {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .editor-container {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .editor-container {
+    width: 100%;
+  }
+  .rich-editor {
+    padding: 10px;
+    font-size: 13px;
+  }
+}
