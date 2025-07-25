@@ -1,4 +1,11 @@
 /* Dashboard page specific styles */
+.max-w-7xl {
+  max-width: 80rem;
+  min-width: 39rem;
+}
+.min-h-screen.bg-gray-50 {
+  min-width: 39rem;
+}
 .stats-card {
   transition: all 0.2s ease-in-out;
 }
@@ -136,6 +143,7 @@
   box-shadow: 0 4px 16px rgba(0,0,0,0.07);
   overflow: hidden;
   margin-bottom: 2rem;
+  min-width: 700px;
 }
 .dashboard-table th, .dashboard-table td {
   padding: 1rem 1.25rem;
@@ -164,6 +172,27 @@
   padding: 2rem 0;
 }
 
+.dashboard-table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+@media (max-width: 910px) {
+  .dashboard-table {
+    min-width: 600px;
+    font-size: 14px;
+  }
+  .dashboard-table th,
+  .dashboard-table td {
+    padding: 6px 8px;
+  }
+}
+@media (max-width: 630px) {
+  .main.max-w-7xl.mx-auto.px-4.sm\:px-6.lg\:px-8.py-6{
+    max-width: 80rem;
+    min-width: 38rem;
+}
+}
 /* Responsive padding */
 @media (max-width: 600px) {
   .dashboard-card, .dashboard-stats-card, .dashboard-card-full {

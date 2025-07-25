@@ -66,35 +66,39 @@
   <div class="mt-10">
     <h2 class="dashboard-section-title">Tickets asignados y resueltos por usuario</h2>
     <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 1rem;">
-      <label for="monthFilterUser" class="text-sm font-medium text-gray-600 mr-2">Filtrar por:</label>
+      <label for="monthFilterUser" class="text-sm font-medium text-gray-600 mr-2">Filtrar por mes:</label>
       <select id="monthFilterUser" [(ngModel)]="selectedMonthYearUser" (change)="onMonthYearUserChange()" class="rounded border border-gray-300 px-2 py-1">
         <option value="">Todos</option>
         <option *ngFor="let my of availableMonthYearsUser" [value]="my">{{ my }}</option>
       </select>
     </div>
-    <table class="dashboard-table">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Rol</th>
-          <th>Asignados</th>
-          <th>Resueltos</th>
-          <th>% Resolución</th>
-        </tr>
-      </thead>
-      <tbody *ngIf="ticketsByUser$ | async as ticketsByUser">
-        <tr *ngFor="let user of ticketsByUser">
-          <td>{{ user.name }}</td>
-          <td>{{ user.role }}</td>
-          <td>{{ user.assigned }}</td>
-          <td>{{ user.resolved }}</td>
-          <td>{{ user.resolutionRate }}%</td>
-        </tr>
-        <tr *ngIf="ticketsByUser.length === 0">
-          <td colspan="5" class="dashboard-table-empty">No hay tickets asignados</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="dashboard-table-responsive">
+      <table class="dashboard-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Rol</th>
+            <th>Asignados</th>
+            <th>Resueltos</th>
+            <th>Pendientes</th>
+            <th>% Resolución</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="ticketsByUser$ | async as ticketsByUser">
+          <tr *ngFor="let user of ticketsByUser">
+            <td>{{ user.name }}</td>
+            <td>{{ user.role }}</td>
+            <td>{{ user.assigned }}</td>
+            <td>{{ user.resolved }}</td>
+            <td style="color: #ef4444; font-weight: bold;">{{ user.pending }}</td>
+            <td>{{ user.resolutionRate }}%</td>
+          </tr>
+          <tr *ngIf="ticketsByUser.length === 0">
+            <td colspan="6" class="dashboard-table-empty">No hay tickets asignados</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <!-- Filtro de mes/año y gráficos en grid responsivo -->
@@ -123,24 +127,44 @@
 
     <!-- Gráfico: Tickets por usuario -->
     <div class="dashboard-card">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <h2 class="dashboard-card-title">Gráfico: Tickets por usuario</h2>
+      <h2 class="dashboard-card-title">Gráfico: Tickets por usuario</h2>
+      <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
         <div>
-          <label for="monthFilterUserChart" class="text-sm font-medium text-gray-600 mr-2">Filtrar por:</label>
+          <label for="monthFilterUserChart" class="text-sm font-medium text-gray-600 mr-2">Filtrar por mes:</label>
           <select id="monthFilterUserChart" [(ngModel)]="selectedMonthYearUser" (change)="onMonthYearUserChange()" class="rounded border border-gray-300 px-2 py-1">
             <option value="">Todos</option>
             <option *ngFor="let my of availableMonthYearsUser" [value]="my">{{ my }}</option>
           </select>
         </div>
+        <div>
+          <label for="supportAdminUserFilter" class="text-sm font-medium text-gray-600 mr-2">Filtrar por usuario:</label>
+          <select id="supportAdminUserFilter" [(ngModel)]="selectedSupportAdminUser" (change)="onSupportAdminUserChange()" class="rounded border border-gray-300 px-2 py-1">
+            <option value="">Todos</option>
+            <option *ngFor="let user of availableSupportAdminUsers" [value]="user.email">{{ user.name }}</option>
+          </select>
+        </div>
       </div>
-      <div class="w-full overflow-x-auto" style="min-height:180px; min-height: 320px;">
-        <canvas baseChart
-          [data]="ticketsByUserChartData"
-          [options]="chartOptions"
-          [type]="'bar'"
-          [plugins]="[ChartDataLabels]">
-        </canvas>
-      </div>
+      <ng-container *ngIf="selectedSupportAdminUser; else multiUserCharts">
+        <div class="w-full overflow-x-auto" style="min-height:180px; min-height: 320px;">
+          <canvas baseChart
+            [data]="ticketsByUserChartData"
+            [options]="chartOptions"
+            [type]="'bar'"
+            [plugins]="[ChartDataLabels]">
+          </canvas>
+        </div>
+      </ng-container>
+      <ng-template #multiUserCharts>
+        <div *ngFor="let chart of multiUserChartsData" class="w-full overflow-x-auto mb-8" style="min-height:180px; min-height: 320px;">
+          <h3 class="text-base font-semibold mb-2">{{ chart.name }}</h3>
+          <canvas baseChart
+            [data]="chart.chartData"
+            [options]="chartOptions"
+            [type]="'bar'"
+            [plugins]="[ChartDataLabels]">
+          </canvas>
+        </div>
+      </ng-template>
     </div>
 
     <!-- Gráfico: Tiempo promedio de resolución por usuario (ocupa todo el ancho) -->

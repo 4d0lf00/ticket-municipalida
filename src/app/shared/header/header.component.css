@@ -16,7 +16,14 @@
 .nav-link:hover {
   transform: translateY(-1px);
 }
-
+@media (max-width: 640px) {
+  header.bg-white.border-b.border-gray-200.shadow-sm {
+    min-width: 39rem;
+}
+.bg-white.border-b.border-gray-200 {
+  min-width: 39rem;
+}
+}
 @media (max-width: 320px) {
   .titulo-navbar h1 {
     font-size: 1rem;

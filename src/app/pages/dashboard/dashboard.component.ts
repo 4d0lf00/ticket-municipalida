@@ -43,6 +43,7 @@ export class DashboardComponent implements OnInit {
     role: string,
     assigned: number,
     resolved: number,
+    pending: number,
     resolutionRate: number
   }[]>;
 
@@ -149,6 +150,11 @@ export class DashboardComponent implements OnInit {
   selectedMonthYearUser: string = '';
   availableMonthYearsAvgTime: string[] = [];
   selectedMonthYearAvgTime: string = '';
+  // Variables para el filtro de usuario
+  availableSupportAdminUsers: { name: string, email: string }[] = [];
+  selectedSupportAdminUser: string = '';
+  // Agregar variable para múltiples gráficos
+  multiUserChartsData: { name: string, chartData: any }[] = [];
 
   constructor(
     private userSession: UserSessionService,
@@ -176,6 +182,11 @@ export class DashboardComponent implements OnInit {
     if (!this.usuario || (this.usuario.role !== 'admin' && this.usuario.role !== 'support')) {
       this.router.navigate(['/unauthorized']);
     }
+    // Poblar lista de usuarios soporte/admin para el filtro
+    const usuarios = this.userSession.getUsuarios();
+    this.availableSupportAdminUsers = usuarios
+      .filter(u => u.role === 'support' || u.role === 'admin')
+      .map(u => ({ name: u.name, email: u.email }));
     // Suscribirse a los datos y preparar los gráficos
     this.ticketsByMonth$.subscribe(data => {
       this.availableMonthYears = data.map(d => d.month);
@@ -318,6 +329,7 @@ export class DashboardComponent implements OnInit {
     role: string,
     assigned: number,
     resolved: number,
+    pending: number,
     resolutionRate: number
   }[]> {
     return this.tickets$.pipe(
@@ -330,6 +342,9 @@ export class DashboardComponent implements OnInit {
             return month === this.selectedMonthYearUser;
           });
         }
+        const usuarios = this.userSession.getUsuarios();
+        // Filtrar solo usuarios con rol 'support' o 'admin'
+        const soporteOAdmin = usuarios.filter(u => u.role === 'support' || u.role === 'admin').map(u => u.email);
         const userStats: { [email: string]: { assigned: number, resolved: number } } = {};
         filteredTickets.forEach(ticket => {
           const assignee = ticket.assignee || 'Sin asignar';
@@ -337,18 +352,21 @@ export class DashboardComponent implements OnInit {
           userStats[assignee].assigned++;
           if (ticket.status === 'resolved') userStats[assignee].resolved++;
         });
-        const usuarios = this.userSession.getUsuarios();
-        return Object.entries(userStats).map(([email, stats]) => {
-          const user = usuarios.find(u => u.email === email);
-          return {
-            name: user ? user.name : email,
-            email,
-            role: user ? user.role : 'N/A',
-            assigned: stats.assigned,
-            resolved: stats.resolved,
-            resolutionRate: stats.assigned > 0 ? Math.round((stats.resolved / stats.assigned) * 100) : 0
-          };
-        });
+        return Object.entries(userStats)
+          .filter(([email, _]) => soporteOAdmin.includes(email))
+          .map(([email, stats]) => {
+            const user = usuarios.find(u => u.email === email);
+            const pending = stats.assigned - stats.resolved;
+            return {
+              name: user ? user.name : email,
+              email,
+              role: user ? user.role : 'N/A',
+              assigned: stats.assigned,
+              resolved: stats.resolved,
+              pending,
+              resolutionRate: stats.assigned > 0 ? Math.round((stats.resolved / stats.assigned) * 100) : 0
+            };
+          });
       })
     );
   }
@@ -357,17 +375,43 @@ export class DashboardComponent implements OnInit {
     this.applyMonthYearUserFilter();
   }
 
+  onSupportAdminUserChange() {
+    this.applyMonthYearUserFilter();
+  }
+
   private applyMonthYearUserFilter() {
     this.ticketsByUser$ = this.calculateTicketsByUserFiltered();
     this.ticketsByUser$.subscribe(data => {
-      this.ticketsByUserChartData = {
-        labels: data.map(d => d.name),
-        datasets: [
-          { label: 'Asignados', data: data.map(d => d.assigned), backgroundColor: '#60a5fa', datalabels: { anchor: 'center', align: 'center', clamp: true } },
-          { label: 'Resueltos', data: data.map(d => d.resolved), backgroundColor: '#34d399', datalabels: { anchor: 'center', align: 'center', clamp: true } },
-          { label: '% Resolución', data: data.map(d => d.resolutionRate), backgroundColor: '#fbbf24', datalabels: { anchor: 'center', align: 'center', clamp: true } },
-        ]
-      };
+      // Para el gráfico: si hay usuario seleccionado, solo mostrar ese usuario
+      if (this.selectedSupportAdminUser) {
+        const graficoData = data.filter(u => u.email === this.selectedSupportAdminUser);
+        this.ticketsByUserChartData = {
+          labels: graficoData.map(d => d.name),
+          datasets: [
+            { label: 'Asignados', data: graficoData.map(d => d.assigned), backgroundColor: '#60a5fa', datalabels: { anchor: 'center', align: 'center', clamp: true } },
+            { label: 'Resueltos', data: graficoData.map(d => d.resolved), backgroundColor: '#34d399', datalabels: { anchor: 'center', align: 'center', clamp: true } },
+            { label: 'Pendientes', data: graficoData.map(d => d.pending), backgroundColor: '#ef4444', datalabels: { anchor: 'center', align: 'center', clamp: true } },
+            { label: '% Resolución', data: graficoData.map(d => d.resolutionRate), backgroundColor: '#fbbf24', datalabels: { anchor: 'center', align: 'center', clamp: true } },
+          ]
+        };
+        this.multiUserChartsData = [];
+      } else {
+        // Si no hay usuario seleccionado, mostrar un gráfico por usuario
+        this.multiUserChartsData = data.map(user => ({
+          name: user.name,
+          chartData: {
+            labels: [user.name],
+            datasets: [
+              { label: 'Asignados', data: [user.assigned], backgroundColor: '#60a5fa', datalabels: { anchor: 'center', align: 'center', clamp: true } },
+              { label: 'Resueltos', data: [user.resolved], backgroundColor: '#34d399', datalabels: { anchor: 'center', align: 'center', clamp: true } },
+              { label: 'Pendientes', data: [user.pending], backgroundColor: '#ef4444', datalabels: { anchor: 'center', align: 'center', clamp: true } },
+              { label: '% Resolución', data: [user.resolutionRate], backgroundColor: '#fbbf24', datalabels: { anchor: 'center', align: 'center', clamp: true } },
+            ]
+          }
+        }));
+        // Para compatibilidad, dejar el gráfico principal vacío
+        this.ticketsByUserChartData = { labels: [], datasets: [] };
+      }
     });
   }
 
