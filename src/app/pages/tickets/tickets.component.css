@@ -211,21 +211,19 @@ div#avatar-requester {
 .loading-skeleton {
   @apply animate-pulse bg-gray-200 rounded;
 }
-@media (max-width: 640px),(min-width: 567px) {
+@media (min-width: 583px) and (max-width: 640px){
   main.max-w-full.mx-auto.px-2.sm\:px-4.lg\:px-6.py-4 {
-    min-width: 39rem;
+    min-width: 34rem;
+    max-width: 36rem;
 }
 }
 /* Responsive text sizes */
-@media (max-width: 567px) {
+@media (max-width: 582px) {
   
   .text-sm {
     font-size: 0.875rem;
     /* otras reglas generales */
   }
-  main.max-w-full.mx-auto.px-2.sm\:px-4.lg\:px-6.py-4 {
-    min-width: 39rem;
-}
   button#all-tickets, button#open-tickets, button#in-progress-tickets, button#resolved-tickets {
     width: 100%; /* solo los botones */
     display: flex;

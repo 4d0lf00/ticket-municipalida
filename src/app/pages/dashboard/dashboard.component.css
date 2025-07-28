@@ -3,9 +3,25 @@
   max-width: 80rem;
   min-width: 39rem;
 }
-.min-h-screen.bg-gray-50 {
+.min-h-screen{
+  min-width: 39rem!important;
+}
+
+/* Estilo específico para el dashboard - aplicar min-width solo en este componente */
+:host .min-h-screen.bg-gray-50 {
   min-width: 39rem;
 }
+
+/* También puedes usar esta alternativa más específica */
+app-dashboard .min-h-screen.bg-gray-50 {
+  min-width: 39rem;
+}
+
+/* Usando la clase específica del dashboard */
+.dashboard-main .min-h-screen.bg-gray-50 {
+  min-width: 39rem;
+}
+
 .stats-card {
   transition: all 0.2s ease-in-out;
 }

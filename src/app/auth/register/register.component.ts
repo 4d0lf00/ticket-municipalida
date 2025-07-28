@@ -16,13 +16,15 @@ export class RegisterComponent implements OnInit, OnDestroy {
   user: User = {
     name: '',
     email: '',
-    role: 'user', // El rol predeterminado es usuario
     department: '',
+    role: 'user', // El rol predeterminado es usuario
     password: ''
   };
-
   mensaje = '';
   isSuccess = false;
+
+  // Variable para guardar referencia al elemento
+  private bgElement: HTMLElement | null = null;
 
   // Lista de departamentos
   departamentos = [
@@ -47,7 +49,36 @@ export class RegisterComponent implements OnInit, OnDestroy {
     'Prevención de Riesgos'
   ];
 
-  constructor(private userSessionService: UserSessionService, private router: Router) {}
+  constructor(private userSessionService: UserSessionService, private router: Router) {
+    // Forzar limpieza de estilos previos al entrar al registro
+    setTimeout(() => {
+      this.forceCleanupAndApply();
+    }, 100);
+  }
+
+  private forceCleanupAndApply() {
+    // Forzar limpieza de todos los elementos que puedan tener estilos del dashboard
+    const elements = document.querySelectorAll('.min-h-screen.bg-gray-50, .min-h-screen, .bg-gray-50');
+    elements.forEach(el => {
+      const element = el as HTMLElement;
+      const currentStyle = element.getAttribute('style') || '';
+      
+      // Limpiar estilos específicos del dashboard
+      const cleanedStyle = currentStyle
+        .replace(/min-width:\s*[^;]+;?\s*/g, '')
+        .replace(/max-width:\s*[^;]+;?\s*/g, '')
+        .trim();
+      
+      if (cleanedStyle) {
+        element.setAttribute('style', cleanedStyle);
+      } else {
+        element.removeAttribute('style');
+      }
+    });
+    
+    // Aplicar el estilo correcto después de la limpieza
+    this.applyResponsiveBg();
+  }
 
   private resizeListener = () => {
     this.applyResponsiveBg();
@@ -60,6 +91,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     window.removeEventListener('resize', this.resizeListener);
+    // Limpiar los estilos cuando se destruya el componente
+    this.cleanupBgStyles();
   }
 
   private applyResponsiveBg() {
@@ -68,10 +101,51 @@ export class RegisterComponent implements OnInit, OnDestroy {
       el = document.querySelector('.min-h-screen') || document.querySelector('.bg-gray-50');
     }
     if (el) {
-      if (window.innerWidth < 600) {
-        (el as HTMLElement).setAttribute('style', 'background-color: rgb(0, 77, 204) !important; min-height: 100vh !important;');
+      this.bgElement = el as HTMLElement;
+      
+      // Limpiar TODOS los estilos inline previos que puedan interferir
+      const currentStyle = this.bgElement.getAttribute('style') || '';
+      const cleanedStyle = currentStyle
+        .replace(/min-width:\s*[^;]+;?\s*/g, '')
+        .replace(/max-width:\s*[^;]+;?\s*/g, '')
+        .replace(/background-color:\s*[^;]+;?\s*/g, '')
+        .replace(/min-height:\s*[^;]+;?\s*/g, '')
+        .trim();
+      
+      if (cleanedStyle) {
+        this.bgElement.setAttribute('style', cleanedStyle);
       } else {
-        (el as HTMLElement).setAttribute('style', '');
+        this.bgElement.removeAttribute('style');
+      }
+      
+      if (window.innerWidth < 600) {
+        // Aplicar el estilo azul para pantallas pequeñas con !important
+        this.bgElement.setAttribute('style', 'background-color: rgb(0, 77, 204) !important; min-height: 100vh !important;');
+      } else {
+        // Para pantallas grandes, forzar el color de fondo original
+        this.bgElement.setAttribute('style', 'background-color: rgb(249, 250, 251) !important; min-height: 100vh !important;');
+      }
+    }
+  }
+
+  private cleanupBgStyles(keepReference: boolean = false) {
+    if (this.bgElement) {
+      // Limpiar solo los estilos que aplicamos, manteniendo otros estilos inline
+      const currentStyle = this.bgElement.getAttribute('style') || '';
+      const cleanedStyle = currentStyle
+        .replace(/background-color:\s*rgb\(0,\s*77,\s*204\)\s*!important;?\s*/g, '')
+        .replace(/min-height:\s*100vh\s*!important;?\s*/g, '')
+        .trim();
+      
+      if (cleanedStyle) {
+        this.bgElement.setAttribute('style', cleanedStyle);
+      } else {
+        this.bgElement.removeAttribute('style');
+      }
+      
+      // Solo limpiar la referencia si no queremos mantenerla
+      if (!keepReference) {
+        this.bgElement = null;
       }
     }
   }

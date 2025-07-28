@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core"
+import { Component, OnInit, OnDestroy } from "@angular/core"
 import { CommonModule } from "@angular/common"
 import { Router, RouterModule } from "@angular/router"
 import { TicketService } from "../../services/ticket.service"
@@ -22,7 +22,7 @@ import { ViewChild } from '@angular/core';
   templateUrl: "./dashboard.component.html",
   styleUrls: ["./dashboard.component.css"],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   public ChartDataLabels = ChartDataLabels;
   public innerWidth: number = window.innerWidth;
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
@@ -170,6 +170,30 @@ export class DashboardComponent implements OnInit {
 
   ngOnDestroy(): void {
     window.removeEventListener('resize', this.onResize.bind(this));
+    // Limpiar estilos aplicados por el dashboard
+    this.cleanupDashboardStyles();
+  }
+
+  private cleanupDashboardStyles() {
+    // Limpiar estilos que puedan haber sido aplicados por el dashboard
+    const elements = document.querySelectorAll('.min-h-screen.bg-gray-50, .min-h-screen, .bg-gray-50');
+    elements.forEach(el => {
+      const element = el as HTMLElement;
+      const currentStyle = element.getAttribute('style') || '';
+      
+      // Limpiar estilos específicos del dashboard
+      const cleanedStyle = currentStyle
+        .replace(/min-width:\s*39rem;?\s*/g, '')
+        .replace(/min-width:\s*38rem;?\s*/g, '')
+        .replace(/max-width:\s*80rem;?\s*/g, '')
+        .trim();
+      
+      if (cleanedStyle) {
+        element.setAttribute('style', cleanedStyle);
+      } else {
+        element.removeAttribute('style');
+      }
+    });
   }
 
   onResize() {

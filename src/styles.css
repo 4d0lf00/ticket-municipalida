@@ -71,3 +71,8 @@ body {
 .badge-gray {
   @apply bg-gray-100 text-gray-800 border border-gray-200;
 }
+
+/* Estilo específico para el dashboard - aplicar min-width solo en la página del dashboard */
+.dashboard-page.min-h-screen.bg-gray-50 {
+  min-width: 39rem;
+}
