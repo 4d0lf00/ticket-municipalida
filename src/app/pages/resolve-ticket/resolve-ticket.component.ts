@@ -60,7 +60,7 @@ onClickOutside(target: HTMLElement) {
       text: "Hola, gracias por contactarnos. Hemos recibido tu solicitud y la estamos revisando.",
     },
     {
-      title: "Solicitar más información",
+      title: "Solicitar información",
       text: "Para poder ayudarte mejor, necesitamos que nos proporciones más detalles sobre el problema que estás experimentando.",
     },
     {
@@ -68,11 +68,11 @@ onClickOutside(target: HTMLElement) {
       text: "El problema ha sido resuelto. Por favor, verifica que todo esté funcionando correctamente y no dudes en contactarnos si necesitas ayuda adicional.",
     },
     {
-      title: "Escalamiento a técnico",
+      title: "Escalar a técnico",
       text: "Hemos escalado tu solicitud a nuestro equipo técnico especializado. Te contactarán en las próximas 24 horas.",
     },
     {
-      title: "Cierre de ticket",
+      title: "Cerrar ticket",
       text: "Consideramos que este ticket ha sido resuelto satisfactoriamente. Si tienes alguna pregunta adicional, no dudes en abrir un nuevo ticket.",
     },
   ];

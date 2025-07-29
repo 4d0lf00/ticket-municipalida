@@ -493,6 +493,19 @@
   gap: 12px;
 }
 
+/* Estilos globales para mejorar el comportamiento de selects en móviles */
+select {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+select option {
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
 .quick-response-label {
   font-size: 14px;
   font-weight: 500;
@@ -508,6 +521,9 @@
   font-size: 14px;
   background: white;
   color: #374151;
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Formatting Toolbar */
@@ -1101,7 +1117,22 @@ p.response-content a{
     background-position: right 12px center;
     background-size: 16px;
     padding-right: 40px;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
+  
+  /* Estilos específicos para el dropdown en móviles */
+  .quick-response-select option {
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  
   .footer-left > * + * {
     margin-top: 12px;
   }
@@ -1141,11 +1172,32 @@ p.response-content a{
   }
 
   @media (max-width: 480px) {
+    
     .quick-response-section{
       max-width: 66dvh;
+      display: flex;
+      align-items: flex-start;
+      flex-direction: column;
+      }
+    select.quick-response-select {
+       width: 100%;
+       font-size: 13px;
+       padding: 8px 10px;
+       padding-right: 35px;
     }
     .quick-response-label{
       min-width: 59px;
+      font-size: 12px;
+  }
+  
+  /* Mejorar el comportamiento del dropdown en pantallas muy pequeñas */
+  .quick-response-select option {
+    font-size: 12px;
+    padding: 6px 8px;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
   }
     }
   
@@ -1154,19 +1206,31 @@ p.response-content a{
     padding: 8px;
   }
   .assignee-select,
-  .status-select {
+  .status-select,
+  select.quick-response-select {
     font-size: 12px;
     padding: 8px 10px;
     padding-right: 35px;
   }
   .assignee-label,
   .status-label,
-  .signature-label {
-    font-size: 10px;
+  .signature-label,
+  .quick-response-label {
+    font-size: 12px;
   }
   .reset-button,
   .send-button {
     padding: 8px 12px;
     font-size: 14px;
+  }
+  
+  /* Optimizar el dropdown para pantallas muy pequeñas */
+  .quick-response-select option {
+    font-size: 11px;
+    padding: 4px 6px;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
   }
 }
