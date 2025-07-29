@@ -165,13 +165,13 @@ filterTickets() {
 }
 
   getStatusCount(status: string): Observable<number> {
-    return this.getFilteredTickets().pipe(
+    return this.tickets$.pipe(
       map(tickets => tickets.filter(t => t.status === status).length)
     );
   }
 
   getTotalCount(): Observable<number> {
-    return this.getFilteredTickets().pipe(map(tickets => tickets.length));
+    return this.tickets$.pipe(map(tickets => tickets.length));
   }
 
   formatDate(date: Date | string): string {

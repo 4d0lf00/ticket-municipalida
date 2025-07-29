@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, inject, ElementRef, ChangeDetectorRef , HostListener, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, inject, ElementRef, ChangeDetectorRef , HostListener, QueryList, ViewChildren, ViewChild } from '@angular/core';
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -25,6 +25,7 @@ interface QuickResponse {
 })
 export class ResolveTicketComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren('menuContainer') menuContainers!: QueryList<ElementRef>;
+  @ViewChild('responseEditor') responseEditor!: any;
   openMenuIndex: number | null = null;
 
   selectedImageUrl: string | null = null;
@@ -232,6 +233,41 @@ onResponseContentClick(event: MouseEvent) {
     this.newResponse = "";
     this.selectedQuickResponse = "";
     this.selectedSignature = "none";
+    
+    // Enfocar el editor después de limpiar el formulario
+    setTimeout(() => {
+      // Intentar diferentes métodos para enfocar el editor
+      if (this.responseEditor) {
+        // Método 1: Usar la API del editor
+        if (this.responseEditor.editorComponent) {
+          this.responseEditor.editorComponent.focus();
+        }
+        // Método 2: Buscar el iframe del editor y enfocarlo
+        const editorIframe = document.querySelector('.tox-edit-area iframe') as HTMLIFrameElement;
+        if (editorIframe) {
+          editorIframe.focus();
+          // Método 3: Buscar el body del editor dentro del iframe
+          if (editorIframe.contentDocument?.body) {
+            editorIframe.contentDocument.body.focus();
+          }
+        }
+      }
+    }, 200);
+  }
+
+  focusEditor() {
+    setTimeout(() => {
+      if (this.responseEditor && this.responseEditor.editorComponent) {
+        this.responseEditor.editorComponent.focus();
+      }
+      const editorIframe = document.querySelector('.tox-edit-area iframe') as HTMLIFrameElement;
+      if (editorIframe) {
+        editorIframe.focus();
+        if (editorIframe.contentDocument?.body) {
+          editorIframe.contentDocument.body.focus();
+        }
+      }
+    }, 200);
   }
 
   goBack(): void {
