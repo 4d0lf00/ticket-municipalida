@@ -273,40 +273,40 @@ onResponseContentClick(event: MouseEvent) {
   goBack(): void {
     this.location.back();
   }
-addResponse() {
-  if (!this.newResponse.trim() || !this.currentUser) return;
+  addResponse() {
+    if (!this.newResponse.trim() || !this.currentUser) return;
 
-  let finalMessage = this.newResponse;
+    let finalMessage = this.newResponse;
 
-  // Envolver imágenes en enlaces
-  finalMessage = finalMessage.replace(
-    /<img[^>]*src="([^"]+)"[^>]*>/g,
-    '<a href="$1" target=""><img src="$1" style="max-width: 100%; height: auto;" /></a>'
-  );
+    // Envolver imágenes en enlaces
+    finalMessage = finalMessage.replace(
+      /<img[^>]*src="([^"]+)"[^>]*>/g,
+      '<a href="$1" target=""><img src="$1" style="max-width: 100%; height: auto;" /></a>'
+    );
 
-  if (this.selectedSignature === "department") {
-    const responder = this.allUsers.find(u => u.email === this.currentUser?.email);
-    const responderDept = responder?.department || 'Departamento Desconocido';
-    finalMessage += `<br><br>${"─".repeat(40)}<br>Atentamente,<br>Equipo de ${responderDept}`;
+    if (this.selectedSignature === "department") {
+      const responder = this.allUsers.find(u => u.email === this.currentUser?.email);
+      const responderDept = responder?.department || 'Departamento Desconocido';
+      finalMessage += `<br><br>${"─".repeat(40)}<br>Atentamente,<br>Equipo de ${responderDept}`;
+    }
+
+    const newMsg = {
+      author: this.currentUser.name,
+      authorEmail: this.currentUser.email,
+      message: finalMessage,
+      timestamp: new Date(),
+    };
+
+    // Usar el nuevo método del servicio que incluye envío de email
+    this.ticketService.addResponse(this.ticket.id, newMsg);
+    
+    // Actualizar las respuestas locales
+    this.responses.push(newMsg);
+    localStorage.setItem(`ticket-responses-${this.ticket.id}`, JSON.stringify(this.responses));
+    
+    this.saveChanges();
+    this.resetForm();
   }
-
-  const newMsg = {
-    author: this.currentUser.name,
-    authorEmail: this.currentUser.email,
-    message: finalMessage,
-    timestamp: new Date(),
-  };
-
-  this.responses.push(newMsg);
-
-  if (this.ticket.assignee) {
-    this.ticket.assignee = this.ticket.assignee;
-  }
-
-  localStorage.setItem(`ticket-responses-${this.ticket.id}`, JSON.stringify(this.responses));
-  this.saveChanges();
-  this.resetForm();
-}
 
 
 
@@ -457,6 +457,21 @@ updateTicketOnly() {
   this.ticket.updatedAt = new Date();
   this.ticketService.updateTicket(this.ticket);
   alert("Ticket actualizado sin publicar respuesta.");
+}
+
+// Método para manejar cambios en la asignación
+onAssigneeChange() {
+  console.log('Asignado cambiado a:', this.ticket.assignee);
+  
+  // Primero actualizar el ticket
+  this.updateTicketOnly();
+  
+  // Luego forzar el envío del email de asignación
+  if (this.ticket.assignee) {
+    setTimeout(() => {
+      this.ticketService.forceSendAssignmentEmail(this.ticket);
+    }, 100);
+  }
 }
 
 }

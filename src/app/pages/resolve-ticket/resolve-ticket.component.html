@@ -238,7 +238,7 @@
                   <!-- Asignar Ticket a un Administrador o soporte -->
                   <div *ngIf="currentUser?.role === 'admin' || currentUser?.role === 'support'" class="assignee-section">
                     <label class="assignee-label">Asignar a:</label>
-                    <select [(ngModel)]="ticket.assignee" class="assignee-select">
+                    <select [(ngModel)]="ticket.assignee" class="assignee-select" (change)="onAssigneeChange()">
                       <option value="" disabled>Seleccionar soporte</option>
                       <option *ngFor="let user of assignableUsers" [value]="user.email">
                         {{ user.name }} ({{ user.role === 'admin' ? 'Administrador' : 'Soporte' }})

@@ -45,3 +45,37 @@
     max-width: 99vw;
   }
 }
+
+/* Estilos para el dropdown del usuario */
+.user-dropdown {
+  width: auto !important;
+  min-width: max-content;
+  white-space: nowrap;
+}
+
+.user-dropdown .user-info {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-dropdown .user-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: none;
+}
+
+.user-dropdown .user-email {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: none;
+}
+
+.user-dropdown .user-department {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: none;
+}

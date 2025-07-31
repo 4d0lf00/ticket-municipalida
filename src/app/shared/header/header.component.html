@@ -40,13 +40,13 @@
           </button>
 
           <div *ngIf="showUserMenu"
-            class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-gray-200">
+            class="absolute right-0 mt-2 bg-white rounded-md shadow-lg py-1 z-10 border border-gray-200 user-dropdown">
 
             <!-- Mostrar datos de usuario en el menú desplegable -->
-            <div class="px-4 py-3 border-b">
-              <p class="text-sm font-medium text-gray-900">{{ usuario.name }}</p>
-              <p class="text-xs text-gray-500 mb-1">{{ usuario.email }}</p>
-              <p class="text-xs text-gray-500">{{ usuario.department }}</p>
+            <div class="px-4 py-3 border-b user-info">
+              <p class="text-sm font-medium text-gray-900 user-name">{{ usuario.name }}</p>
+              <p class="text-xs text-gray-500 mb-1 user-email">{{ usuario.email }}</p>
+              <p class="text-xs text-gray-500 user-department">{{ usuario.department }}</p>
             </div>
 
             <!-- Mostrar "Registrar usuario" solo si el usuario es admin -->

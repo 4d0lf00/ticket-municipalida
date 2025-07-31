@@ -43,10 +43,15 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./auth/login/login.component').then((m) => m.LoginComponent),
   },
-{
-  path: 'register',
-  loadComponent: () =>
-    import('./auth/register/register.component').then((m) => m.RegisterComponent),
-  canActivate: [AdminGuard]
-},
+  {
+    path: 'register',
+    loadComponent: () =>
+      import('./auth/register/register.component').then((m) => m.RegisterComponent),
+    canActivate: [AdminGuard]
+  },
+  {
+    path: 'email-test',
+    loadComponent: () =>
+      import('./components/email-test/email-test.component').then((m) => m.EmailTestComponent),
+  },
 ];
