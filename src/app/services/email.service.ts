@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 export interface EmailData {
   to: string;
@@ -17,10 +18,10 @@ export interface EmailData {
   providedIn: 'root'
 })
 export class EmailService {
-  private readonly BREVO_API_URL = 'https://api.brevo.com/v3/smtp/email';
-  private readonly BREVO_API_KEY = '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';
-  private readonly FROM_EMAIL = 'no-reply@munimelipilla.cl';
-  private readonly FROM_NAME = 'Municipalidad de Melipilla 2025';
+  private readonly BREVO_API_URL = environment.brevoApiUrl;
+  private readonly BREVO_API_KEY = environment.brevoApiKey;
+  private readonly FROM_EMAIL = environment.fromEmail;
+  private readonly FROM_NAME = environment.fromName;
 
   constructor(private http: HttpClient) {}
 
