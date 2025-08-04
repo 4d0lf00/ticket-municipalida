@@ -74,5 +74,5 @@ body {
 
 /* Estilo específico para el dashboard - aplicar min-width solo en la página del dashboard */
 .dashboard-page.min-h-screen.bg-gray-50 {
-  min-width: 39rem;
+  /* Removido min-width para permitir responsividad completa */
 }

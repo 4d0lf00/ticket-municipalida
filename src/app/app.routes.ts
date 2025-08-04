@@ -5,7 +5,7 @@ import { AdminGuard } from './guards/admin.guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/tickets',
+    redirectTo: '/dashboard',
     pathMatch: 'full',
   },
   {
