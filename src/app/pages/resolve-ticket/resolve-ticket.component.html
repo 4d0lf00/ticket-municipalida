@@ -227,7 +227,7 @@
                     <!-- Ticket Status -->
                     <div class="status-section">
                       <label class="status-label">Estado del Ticket:</label>
-                      <select [(ngModel)]="ticket.status" class="status-select">
+                      <select [(ngModel)]="ticket.status" class="status-select" (change)="onStatusChange()">
                         <option value="open">Abrir</option>
                         <option value="in-progress">En Progreso</option>
                         <option value="resolved">Resuelto</option>

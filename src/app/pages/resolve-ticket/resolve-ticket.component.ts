@@ -36,6 +36,8 @@ export class ResolveTicketComponent implements OnInit, AfterViewInit, OnDestroy 
   currentUser: User | null = null;
   assignableUsers: User[] = [];
   allUsers: User[] = [];
+  lastStatus: string = '';
+  hasSentResolvedEmail = false;
 
   selectedQuickResponse = "";
   selectedSignature = "none";
@@ -140,7 +142,10 @@ onClickOutside(target: HTMLElement) {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get("id");
     const allTickets = this.ticketService.getAllTickets();
-    this.ticket = allTickets.find((t) => t.id === id)!;
+    const found = allTickets.find((t) => t.id === id);
+    // Usar una copia profunda para evitar mutar el objeto dentro del servicio
+    this.ticket = found ? JSON.parse(JSON.stringify(found)) : (undefined as any);
+    this.lastStatus = this.ticket?.status || '';
 
     if (!this.ticket) {
       this.router.navigate(["/tickets"]);
@@ -454,8 +459,18 @@ onScroll() {
   }
 }
 updateTicketOnly() {
+  // Obtener copia del ticket actual almacenado para comparar cambios
+  const stored = this.ticketService.getAllTickets().find(t => t.id === this.ticket.id);
+  const previousStatus = stored?.status;
+
   this.ticket.updatedAt = new Date();
   this.ticketService.updateTicket(this.ticket);
+
+  // Si cambió a resuelto, aseguramos persistencia del cambio antes de alertar
+  if (previousStatus !== 'resolved' && this.ticket.status === 'resolved') {
+    console.log('Estado cambiado a resuelto, se enviará notificación.');
+      this.hasSentResolvedEmail = true;
+  }
   alert("Ticket actualizado sin publicar respuesta.");
 }
 
@@ -470,6 +485,24 @@ onAssigneeChange() {
   if (this.ticket.assignee) {
     setTimeout(() => {
       this.ticketService.forceSendAssignmentEmail(this.ticket);
+    }, 100);
+  }
+}
+
+onStatusChange() {
+  // Guardar cambio inmediato para que el servicio detecte el estado resuelto y envíe el correo
+  console.log('Cambio de estado desde componente:', {
+    previousStatus: this.lastStatus,
+    newStatus: this.ticket.status,
+    ticketId: this.ticket.id
+  });
+  this.lastStatus = this.ticket.status;
+  this.updateTicketOnly();
+
+  // En caso de no detectarse en el servicio (por igualdad de estados), forzar envío si nuevo estado es resuelto
+  if (this.ticket.status === 'resolved') {
+    setTimeout(() => {
+      this.ticketService.forceSendResolvedEmail(this.ticket);
     }, 100);
   }
 }

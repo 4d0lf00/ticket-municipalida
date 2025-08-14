@@ -304,6 +304,57 @@ export class EmailService {
     });
   }
 
+  sendTicketResolvedEmail(ticket: any): Observable<any> {
+    const subject = `Ticket ${ticket.id} resuelto - ${ticket.title}`;
+
+    const htmlContent = `
+      <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; background-color: #ffffff;">
+        <div style="background-color: #2563eb; color: white; padding: 12px; text-align: center; border-radius: 6px 6px 0 0;">
+          <h1 style="margin: 0; font-size: 18px; font-weight: bold; color: white;">Sistema de Tickets Municipal</h1>
+          <p style="margin: 4px 0 0 0; font-size: 12px; color: white;">Municipalidad de Melipilla 2025</p>
+        </div>
+        <div style="padding: 12px; background-color: #f8fafc;">
+          <h2 style="color: #1e293b; margin: 0 0 8px 0; font-size: 16px;">Ticket Resuelto</h2>
+          <div style="background-color: white; padding: 10px; border-radius: 6px; margin: 8px 0; border: 1px solid #e2e8f0;">
+            <h3 style="color: #2563eb; margin: 0 0 8px 0; font-size: 14px;">Ticket #${ticket.id}</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+              <div>
+                <p style="margin: 3px 0; font-size: 12px;"><strong>Título:</strong> ${ticket.title}</p>
+                <p style="margin: 3px 0; font-size: 12px;"><strong>Solicitante:</strong> ${ticket.requesterName}</p>
+                <p style="margin: 3px 0; font-size: 12px;"><strong>Email:</strong> ${ticket.requesterEmail}</p>
+                <p style="margin: 3px 0; font-size: 12px;"><strong>Departamento:</strong> ${ticket.department}</p>
+              </div>
+              <div>
+                <p style="margin: 3px 0; font-size: 12px;"><strong>Categoría:</strong> ${this.getCategoryText(ticket.category)}</p>
+                <p style="margin: 3px 0; font-size: 12px;"><strong>Prioridad:</strong> <span style="color: ${this.getPriorityColor(ticket.priority)}; font-weight: bold;">${this.getPriorityText(ticket.priority)}</span></p>
+                <p style="margin: 3px 0; font-size: 12px;"><strong>Estado:</strong> <span style="color: ${this.getStatusColor(ticket.status)}; font-weight: bold;">${this.getStatusText(ticket.status)}</span></p>
+                <p style="margin: 3px 0; font-size: 12px;"><strong>Fecha de resolución:</strong> ${new Date(ticket.updatedAt).toLocaleString('es-CL')}</p>
+              </div>
+            </div>
+            <div style="padding: 8px; background-color: #f8fafc; border-radius: 4px;">
+              <p style="margin: 0; font-size: 12px;"><strong>Descripción:</strong></p>
+              <p style="margin: 4px 0 0 0; white-space: pre-wrap; font-size: 12px; line-height: 1.3;">${ticket.description}</p>
+            </div>
+          </div>
+          <div style="background-color: #f0fdf4; padding: 10px; border-radius: 6px; border-left: 3px solid #22c55e; margin: 8px 0;">
+            <h4 style="margin: 0; color: #166534; font-size: 14px;">Tu ticket ha sido marcado como resuelto</h4>
+            <p style="margin: 4px 0 0 0; font-size: 12px; line-height: 1.3;">Si el problema persiste o necesitas asistencia adicional, responde a este correo o abre un nuevo ticket.</p>
+          </div>
+        </div>
+        <div style="background-color: #f1f5f9; padding: 10px; text-align: center; color: #64748b; border-radius: 0 0 6px 6px;">
+          <p style="margin: 0; font-size: 10px;">Este es un email automático del Sistema de Tickets Municipal</p>
+          <p style="margin: 2px 0 0 0; font-size: 10px;">© 2025 Municipalidad de Melipilla</p>
+        </div>
+      </div>
+    `;
+
+    return this.sendEmail({
+      to: ticket.requesterEmail,
+      subject: subject,
+      htmlContent: htmlContent
+    });
+  }
+
   private getCategoryText(category: string): string {
     const categories: { [key: string]: string } = {
       'hardware': 'Hardware',

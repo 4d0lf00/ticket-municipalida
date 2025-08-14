@@ -80,6 +80,11 @@ addTicket(ticketData: Partial<Ticket>): void {
   updateTicket(updated: Ticket): void {
     const currentTickets = this.ticketsSubject.value;
     const oldTicket = currentTickets.find(t => t.id === updated.id);
+    console.log('updateTicket llamado:', {
+      ticketId: updated.id,
+      fromStatus: oldTicket?.status,
+      toStatus: updated.status
+    });
     
     const updatedTickets = currentTickets.map((t) =>
       t.id === updated.id ? updated : t
@@ -95,6 +100,19 @@ addTicket(ticketData: Partial<Ticket>): void {
         ticketId: updated.id
       });
       this.sendTicketAssignedNotification(updated);
+    }
+
+    // Enviar email si el estado cambió a resuelto
+    if (oldTicket && oldTicket.status !== 'resolved' && updated.status === 'resolved') {
+      console.log('Detectado cambio a RESUELTO. Enviando email al solicitante:', {
+        ticketId: updated.id,
+        requesterEmail: updated.requesterEmail,
+        requesterName: updated.requesterName
+      });
+      this.emailService.sendTicketResolvedEmail(updated).subscribe({
+        next: (response: any) => console.log('Email de ticket resuelto enviado al solicitante:', response),
+        error: (error: any) => console.error('Error enviando email de ticket resuelto:', error)
+      });
     }
   }
 
@@ -244,6 +262,17 @@ addTicket(ticketData: Partial<Ticket>): void {
   forceSendAssignmentEmail(ticket: Ticket): void {
     console.log('Forzando envío de email de asignación para ticket:', ticket.id);
     this.sendTicketAssignedNotification(ticket);
+  }
+
+  /**
+   * Método público para forzar el envío de email de ticket resuelto
+   */
+  forceSendResolvedEmail(ticket: Ticket): void {
+    console.log('Forzando envío de email de ticket resuelto para ticket:', ticket.id);
+    this.emailService.sendTicketResolvedEmail(ticket).subscribe({
+      next: (response: any) => console.log('Email de ticket resuelto enviado (forzado):', response),
+      error: (error: any) => console.error('Error enviando email de ticket resuelto (forzado):', error)
+    });
   }
 
   /**
