@@ -1,4 +1,4 @@
-# Sistema de Tickets Municipal
+# Sistema de Tickets Municipal por Renzo Paolo Romanini Henríquez
 
 Sistema de gestión de tickets de soporte técnico para la Ilustre Municipalidad de Melipilla.
 
